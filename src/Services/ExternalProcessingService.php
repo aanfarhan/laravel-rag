@@ -14,8 +14,8 @@ use Omniglies\LaravelRag\Exceptions\RagException;
 class ExternalProcessingService
 {
     protected Client $client;
-    protected string $apiUrl;
-    protected string $apiKey;
+    protected ?string $apiUrl;
+    protected ?string $apiKey;
     protected int $timeout;
 
     public function __construct()
@@ -24,7 +24,8 @@ class ExternalProcessingService
         $this->apiKey = config('rag.external_processing.api_key');
         $this->timeout = config('rag.external_processing.timeout', 300);
 
-        if (empty($this->apiUrl) || empty($this->apiKey)) {
+        // Only throw exception if external processing is enabled
+        if (config('rag.external_processing.enabled', false) && (empty($this->apiUrl) || empty($this->apiKey))) {
             throw RagException::configurationMissing('external_processing API credentials');
         }
 
@@ -44,6 +45,9 @@ class ExternalProcessingService
         UploadedFile $file,
         array $options = []
     ): string {
+        if (!config('rag.external_processing.enabled', false)) {
+            throw RagException::configurationMissing('External processing is not enabled');
+        }
         $processingJob = RagProcessingJob::create([
             'document_id' => $document->id,
             'job_type' => 'document_processing',
@@ -120,6 +124,9 @@ class ExternalProcessingService
 
     public function getJobStatus(string $externalJobId): array
     {
+        if (!config('rag.external_processing.enabled', false)) {
+            throw RagException::configurationMissing('External processing is not enabled');
+        }
         try {
             $response = $this->client->get("/jobs/{$externalJobId}/status");
             $data = json_decode($response->getBody()->getContents(), true);
@@ -148,6 +155,9 @@ class ExternalProcessingService
 
     public function getProcessedDocument(string $externalJobId): array
     {
+        if (!config('rag.external_processing.enabled', false)) {
+            throw RagException::configurationMissing('External processing is not enabled');
+        }
         try {
             $response = $this->client->get("/jobs/{$externalJobId}/result");
             $data = json_decode($response->getBody()->getContents(), true);
