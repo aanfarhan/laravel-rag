@@ -1,0 +1,51 @@
+# Dependencies
+/vendor/
+composer.lock
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+.phpunit.cache/
+coverage/
+.phpunit.result.cache
+
+# Logs
+storage/logs/*.log
+*.log
+
+# Cache
+bootstrap/cache/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+
+# Build artifacts
+/public/hot
+/public/storage
+/storage/*.key
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Laravel Mix
+/public/css
+/public/js
+/public/mix-manifest.json
+
+# Package development
+/.php-cs-fixer.cache
+/.phpunit.result.cache
